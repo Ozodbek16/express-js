@@ -1,0 +1,19 @@
+<table>
+    <tr>
+        <th>name</th>
+        <th>price</th>
+        <th>count</th>
+    </tr>
+    {{#each card.books}}
+    <tr>
+        <td>{{name}}</td>
+        <td>{{price}}</td>
+        <td>{{count}}</td>
+        <td><button class="btn">del</button></td>
+    </tr>
+    {{/each}}
+</table>
+
+<div class="all-price">
+    <p>All price: {{card.price}}</p>
+</div>

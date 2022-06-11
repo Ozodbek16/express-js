@@ -1,0 +1,26 @@
+<nav>
+  <div class="nav-wrapper"><a class="brand-logo" href="/">BookStore</a>
+    <ul class="right hide-on-med-and-down" id="nav-mobile">
+      {{#if isHome}}
+      <li class="active"><a href="/">Home</a></li>
+      {{else}}
+      <li><a href="/">Home</a></li>
+      {{/if}}
+      {{#if isBooks}}
+      <li class="active"><a href="/api/books">Books</a></li>
+      {{else}}
+      <li><a href="/api/books">Books</a></li>
+      {{/if}}
+      {{#if isCard}}
+      <li class="active"><a href="/api/card">Shopping card</a></li>
+      {{else}}
+      <li><a href="/api/card">Shopping card</a></li>
+      {{/if}}
+      {{#if isAbout}}
+      <li class="active"><a href="/about">About us</a></li>
+      {{else}}
+      <li><a href="/about">About us</a></li>
+      {{/if}}
+    </ul>
+  </div>
+</nav>
