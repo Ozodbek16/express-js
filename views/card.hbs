@@ -1,3 +1,7 @@
+<div class="home-page-url">
+    <a href="/">Home page</a>
+</div>
+
 <table>
     <tr>
         <th>name</th>
@@ -9,7 +13,7 @@
         <td>{{name}}</td>
         <td>{{price}}</td>
         <td>{{count}}</td>
-        <td><button class="btn">del</button></td>
+        <td><a href="/api/card/del/{{id}}/{{price}}" class="btn">del</a></td>
     </tr>
     {{/each}}
 </table>
