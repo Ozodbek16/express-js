@@ -11,7 +11,7 @@
     {{#each card.books}}
     <tr>
         <td>{{name}}</td>
-        <td>{{price}}</td>
+        <td class="price">{{price}}</td>
         <td>{{count}}</td>
         <td><a href="/api/card/del/{{id}}/{{price}}" class="btn">del</a></td>
     </tr>
@@ -19,5 +19,7 @@
 </table>
 
 <div class="all-price">
-    <p>All price: {{card.price}} SUM</p>
+    <p class="price">All price: {{card.price}}</p>
 </div>
+
+<script src="/scripts/script.js"></script>
