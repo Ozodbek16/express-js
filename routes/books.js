@@ -3,19 +3,24 @@ const router = express.Router()
 const Joi = require('joi')
 const authMiddleware = require('../middleware/auth')
 const Books = require('../model/Books')
+const Card = require("../model/Card");
 
 // View all books
 router.get('/', async (req, res) => {
     const books = await Books.getAll()
+    const card = await Card.getCard();
     res.render('books', {
+        card,
         title: 'All books',
         books,
         isBooks: true
     })
 })
 
-router.get('/add', (req, res) => {
+router.get('/add',async (req, res) => {
+    const card = await Card.getCard();
     res.render('formBooks', {
+        card,
         title: 'Add new book',
         isBooks: true
     })
@@ -23,9 +28,11 @@ router.get('/add', (req, res) => {
 
 // Get book by id
 router.get('/:id', async (req, res) => {
+    const card = await Card.getCard();
     Books.findById(req.params.id)
         .then(book => {
             res.render('book', {
+                card,
                 book,
                 title: book.name
             })

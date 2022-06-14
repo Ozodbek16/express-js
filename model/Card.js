@@ -20,6 +20,8 @@ class Card {
 
     card.price = card.price + +book.price;
 
+    card.count += 1
+
     return new Promise((res, rej) => {
       fs.writeFile(dir, JSON.stringify(card), (err) => {
         if (err) rej(err);
@@ -40,6 +42,8 @@ class Card {
     }
 
     card.price = card.price - +price;
+
+    card.count--
 
     return new Promise((res, rej) => {
       fs.writeFile(dir, JSON.stringify(card), (err) => {
