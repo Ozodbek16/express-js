@@ -1,25 +1,41 @@
-<div class="home-page-url">
-    <a href="/">Home page</a>
+<h1>Hello card page</h1>
+
+<div id="card">
+    {{#if card.books.length}}
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Count</th>
+                <th>Total price</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {{#each card.books}}
+            <tr>
+                <td>{{name}}</td>
+                <td class="price">{{price}}</td>
+                <td class="count">{{count}}</td>
+                <td class="count_price"></td>
+                <td>
+                    <button id="{{id}}" data-id="{{id}}" class="btn remove-btn"
+                        style="background-color: red;">Delete</button>
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+
+        <tr>
+            <td class="total">{{card.price}}</td>
+        </tr>
+    </table>
+    {{else}}
+    <h2>Card is empty</h2>
+    {{/if}}
 </div>
 
-<table>
-    <tr>
-        <th>name</th>
-        <th>price</th>
-        <th>count</th>
-    </tr>
-    {{#each card.books}}
-    <tr>
-        <td>{{name}}</td>
-        <td class="price">{{price}}</td>
-        <td>{{count}}</td>
-        <td><a href="/api/card/del/{{id}}/{{price}}" class="btn">del</a></td>
-    </tr>
-    {{/each}}
-</table>
-
-<div class="all-price">
-    <p class="price">All price: {{card.price}}</p>
-</div>
 
 <script src="/scripts/script.js"></script>

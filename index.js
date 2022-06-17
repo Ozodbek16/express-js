@@ -4,12 +4,15 @@ const app = express() // object // {}
 const morgan = require('morgan')
 const path = require('path')
 const { create } = require('express-handlebars')
+const mongoose = require('mongoose')
 
 // Importing routes
 const homeRouter = require('./routes/home')
 const aboutRouter = require('./routes/about')
 const booksRouter = require('./routes/books')
 const cardRouter = require('./routes/card')
+
+
 
 // Dotenv
 require('dotenv').config()
@@ -64,9 +67,15 @@ app.use('/about', aboutRouter)
 app.use('/api/books', booksRouter)
 app.use('/api/card', cardRouter)
 
-
 try {
     const port = process.env.PORT || 5000
+    
+    // Connection with db
+    mongoose.connect('mongodb+srv://Ozodbek:q0w9e8r7@cluster0.2834q.mongodb.net/?retryWrites=true&w=majority', (err) => {
+        if (err) console.error(err);
+        else console.log('Mongo db connected');
+    });
+
     app.listen(port, () => {
         console.log('Server working on port', port);
     })

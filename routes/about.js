@@ -1,14 +1,10 @@
 const express = require('express')
-const router = express.Router()
-const Card = require("../model/Card");
-
+const router = express.Router() 
 
 // GET method // Read
-router.get('/', async(req, res, next) => {
-    const card = await Card.getCard();
+router.get('/', (req, res, next) => {
     res.render('about',
         {
-            card,
             title: 'About',
             isAbout: true
         })

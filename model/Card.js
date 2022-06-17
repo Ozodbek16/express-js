@@ -1,66 +1,65 @@
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs')
+const path = require('path')
 
-const dir = path.join(__dirname, "..", "data", "card.json");
+const dir = path.join(__dirname, '..', 'data', 'card.json')
 
 class Card {
-  static async add(book) {
-    let card = await Card.getCard();
-    const idx = card.books.findIndex((item) => item.id === book.id); // agar yo'q bo'sa -1
+    static async add(book) {
+        let card = await Card.getCard()
+        const idx = card.books.findIndex(item => item.id === book.id) // agar yo'q bo'sa -1
 
-    if (idx === -1) {
-      // demak kitob baza yo'q uni cout = 1 qilib yangi object qilib qo'shamiz
-      book.count = 1;
-      card.books.push(book);
-    } else {
-      // demak idx qandaydur index kalit (idx = 2) kitob bazada bor // faqat count ni +1
-      book.count = card.books[idx].count + 1;
-      card.books[idx] = book;
+        if (idx === -1) {
+            // demak kitob baza yo'q uni cout = 1 qilib yangi object qilib qo'shamiz
+            book.count = 1
+            card.books.push(book)
+        } else {
+            // demak idx qandaydur index kalit (idx = 2) kitob bazada bor // faqat count ni +1
+            book.count = card.books[idx].count + 1
+            card.books[idx] = book
+        }
+
+        card.price = card.price + +book.price
+
+        return new Promise((res, rej) => {
+            fs.writeFile(dir, JSON.stringify(card), (err) => {
+                if (err) rej(err)
+                else res()
+            })
+        })
     }
 
-    card.price = card.price + +book.price;
-
-    card.count += 1
-
-    return new Promise((res, rej) => {
-      fs.writeFile(dir, JSON.stringify(card), (err) => {
-        if (err) rej(err);
-        else res();
-      });
-    });
-  }
-
-  static async remove(id, price) {
-    let card = await Card.getCard();
-
-    const idx = card.books.findIndex((item) => item.id === id);
-
-    if (card.books[idx].count > 1) {
-      card.books[idx].count = card.books[idx].count - 1;
-    } else {
-      card.books.splice(idx, 1);
+    static async getCard() {
+        return new Promise((res, rej) => {
+            fs.readFile(dir, 'utf-8', (err, data) => {
+                if (err) rej(err)
+                else res(JSON.parse(data))
+            })
+        })
     }
 
-    card.price = card.price - +price;
+    static async removeById(id) {
+        const card = await Card.getCard() // {books[], price}
 
-    card.count--
+        const idx = card.books.findIndex(book => book.id === id)
 
-    return new Promise((res, rej) => {
-      fs.writeFile(dir, JSON.stringify(card), (err) => {
-        if (err) rej(err);
-        else res();
-      });
-    });
-  }
+        card.price = card.price - +card.books[idx].price
 
-  static async getCard() {
-    return new Promise((res, rej) => {
-      fs.readFile(dir, "utf-8", (err, data) => {
-        if (err) rej(err);
-        else res(JSON.parse(data));
-      });
-    });
-  }
+        if (card.books[idx].count === 1) {
+            // demak kitob soni 1 ta uni baza o'chiramiz
+            card.books = card.books.filter(book => book.id !== id)
+        } else {
+            // demak kitob 1 tadan ko'p uni sonini 1 ga kamaytiramiz
+            card.books[idx].count--
+        }
+
+        return new Promise((res, rej) => {
+            fs.writeFile(dir, JSON.stringify(card), (err) => {
+                if (err) rej(err)
+                else res(card)
+            })
+        })
+
+    }
 }
 
-module.exports = Card;
+module.exports = Card

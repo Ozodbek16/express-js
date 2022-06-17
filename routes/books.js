@@ -3,24 +3,23 @@ const router = express.Router()
 const Joi = require('joi')
 const authMiddleware = require('../middleware/auth')
 const Books = require('../model/Books')
-const Card = require("../model/Card");
+const Book_Model = require('../model/Book_Mongo')
 
 // View all books
 router.get('/', async (req, res) => {
-    const books = await Books.getAll()
-    const card = await Card.getCard();
+    // const books = await Books.getAll()
+
+    const books = await Book_Model.find()
+
     res.render('books', {
-        card,
         title: 'All books',
         books,
         isBooks: true
     })
 })
 
-router.get('/add',async (req, res) => {
-    const card = await Card.getCard();
+router.get('/add', (req, res) => {
     res.render('formBooks', {
-        card,
         title: 'Add new book',
         isBooks: true
     })
@@ -28,11 +27,9 @@ router.get('/add',async (req, res) => {
 
 // Get book by id
 router.get('/:id', async (req, res) => {
-    const card = await Card.getCard();
-    Books.findById(req.params.id)
+    Book_Model.findById(req.params.id)
         .then(book => {
             res.render('book', {
-                card,
                 book,
                 title: book.name
             })
@@ -51,7 +48,6 @@ router.post('/add', authMiddleware, async (req, res) => {
     // Validatsiya // hiyalaymiz
     let bookSchema = Joi.object({
         name: Joi.string().min(3).required(),
-        year: Joi.number().integer().min(1900).max(2022).required(),
         img: Joi.string(),
         price: Joi.number().integer().required()
     })
@@ -64,18 +60,24 @@ router.post('/add', authMiddleware, async (req, res) => {
         return
     }
 
-    const book = new Books(
-        req.body.name,
-        req.body.year,
-        req.body.img
-    )
+    // const book = new Books(
+    //     req.body.name,
+    //     req.body.year,
+    //     req.body.img
+    // )
+
+    const book = new Book_Model({
+        name: req.body.name,
+        price: req.body.price,
+        img: req.body.img
+    })
 
     await book.save()
     res.status(201).redirect('/api/books')
 })
 
 router.get('/update/:id', authMiddleware, async (req, res) => {
-    const oldBook = await Books.findById(req.params.id)
+    const oldBook = await Book_Model.findById(req.params.id)
 
     res.render('updateBook', {
         oldBook,
@@ -88,7 +90,6 @@ router.post('/update/', authMiddleware, async (req, res) => {
     // Validatsiya // hiyalaymiz
     let bookSchema = Joi.object({
         name: Joi.string().min(3).required(),
-        year: Joi.number().integer().min(1900).max(2022).required(),
         img: Joi.string(),
         id: Joi.string(),
         price: Joi.number().integer().required()
@@ -96,14 +97,14 @@ router.post('/update/', authMiddleware, async (req, res) => {
 
     validateBody(req.body, bookSchema, res)
 
-    await Books.updateById(req.body.id, req.body)
+    await Book_Model.findByIdAndUpdate(req.body.id, req.body)
     res.redirect('/api/books')
 })
 
 // Remove book
 router.get('/remove/:id', authMiddleware, async (req, res) => {
     const id = req.params.id
-    Books.removeById(id).then(() => {
+    Book_Model.findByIdAndDelete(id).then(() => {
         res.redirect('/api/books')
     }).catch(err => {
         console.log(err)
